@@ -1,0 +1,32 @@
+<div class="padding"></div>
+<div class="row">
+
+	<div class="col-xs-3">
+		<select class="form-control" onchange="var url = this.options[this.selectedIndex].value; window.location.href=url;">
+			<option value="/app?zoneid={{.currentzone}}">Current: {{.currentzone}}</option>
+			{{range $key, $val := .zonelist}}
+			<option value="/app?zoneid={{$val}}">{{$val}}</option>
+			{{end}}
+		</select>
+		<div id="zktree_div" style="overflow:auto;height:600px;">
+		</div>
+	</div>
+	<div class="col-xs-9">
+		<ol class="breadcrumb">
+			<li><a href="#">Home</a></li>
+			<li><a href="#">ZKTree</a></li>
+			<li class="active">
+				<span class="node_path">/ymb/brokers</span>
+			</li>
+		</ol>
+		<div class="show">
+			<h2>Please select one node you want to view or modify.</h2>
+			<h2>:)</h2>
+		</div>
+	</div>
+
+</div>
+
+<div class="padding"></div>
+
+<input type="hidden" id="cur_zone" value="{{.currentzone}}" />

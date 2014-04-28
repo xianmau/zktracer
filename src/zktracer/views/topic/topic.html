@@ -1,0 +1,99 @@
+<div class="padding"></div>
+<div class="row">
+	<div class="col-xs-3">
+		<input class="form-control" type="text" />
+	</div>
+	<div class="col-xs-2">
+		<button type="botton" class="btn btn-default">Search</button>
+	</div>
+	<div class="col-xs-2"></div>
+	<div class="col-xs-2">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"> View all
+		    </label>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"> Auto Refresh
+		    </label>
+		</div>
+	</div>
+	<div class="col-xs-3">
+		<select class="form-control" onchange="var url = this.options[this.selectedIndex].value; window.location.href=url;">
+		<option value="/topic?zoneid={{.currentzone}}">Current: {{.currentzone}}</option>
+		{{range $key, $val := .zonelist}}
+			<option value="/topic?zoneid={{$val}}">{{$val}}</option>
+		{{end}}
+		</select>
+	</div>
+</div>
+<div class="padding"></div>
+<div class="row">
+	<div class="col-xs-12">
+		Current zone: 
+		<span class="text-primary"><strong>{{.currentzone}}</strong></span>
+		Last sync: 
+		<span class="text-primary"><strong>{{.lastsync}}</strong></span>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-2">
+		<div class="padding"></div>
+		<ul class="nav nav-tabs" id="byTab">
+			<li class="active"><a href="#byApp" data-toggle="tab">By App</a></li>
+			<li><a href="#byBroker" data-toggle="tab">By Broker</a></li>
+		</ul>
+
+		<div class="tab-content">
+			<div class="tab-pane active" id="byApp">
+				<div class="list-group">
+					{{range $key, $val := .applist}}
+					<a href="/topic?zoneid={{$.currentzone}}&appid={{$val}}" class="list-group-item">{{$val}}</a>
+					{{end}}
+				</div>
+			</div>
+			<div class="tab-pane" id="byBroker">
+				<div class="list-group">
+					{{range $key, $val := .brokerlist}}
+					<a href="/topic?zoneid={{$.currentzone}}&brokerid={{$val}}" class="list-group-item">{{$val}}</a>
+					{{end}}
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="col-xs-10">
+		<table class="tablesorter">
+			<thead>
+				<tr>
+					<th style="width:150px;">Name</th>
+					<th style="width:150px;">App Id</th>
+					<th style="width:150px;">Broker Id</th>
+					<th style="width:150px;">Replica Number</th>
+					<th style="width:150px;">Retention</th>
+					<th style="width:150px;">Status</th>
+					<th>Segments</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{range $key, $val := .topiclist}}
+				<tr>
+					<td class="id-data">{{$val.Name}}</td>
+					<td class="id-data">{{$val.AppId}}</td>
+					<td class="id-data">{{$val.BrokerId}}</td>
+					<td class="int-data">{{$val.ReplicaNum}}</td>
+					<td class="int-data">{{$val.ReplicaNum}}</td>
+					<td class="status-data">{{$val.Status}}</td>
+					<td class="segments-data">{{$val.Segments}}</td>
+				</tr>
+			{{end}}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+<input type="hidden" id="cur_tab" value="{{if .currentbroker}}1{{else}}0{{end}}" />

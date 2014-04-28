@@ -1,0 +1,19 @@
+
+.id-data, .status-data, .float-data{
+	font-weight: bold;
+}
+
+.float-data{
+	background: #FBFBFB;
+}
+
+.addr-data .label{
+	margin: 0 15px 0 0;
+	cursor: pointer;
+}
+.op-data {
+	width: 120px;
+}
+.op-data a{
+	margin: 0 20px 0 0;
+}

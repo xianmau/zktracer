@@ -1,0 +1,102 @@
+/* home.html layout */
+
+body{
+	padding: 0;
+	margin: 0;
+	font-family: Helvetica, Tahoma, Arial, “Microsoft YaHei”, “微软雅黑”, SimSun, “宋体”, STXihei, “华文细黑”, Heiti, “黑体”, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}
+.clear{
+	clear: both;
+}
+.padding{
+	height: 20px;
+}
+
+/* header styles ------------------------------------------ */
+.header{
+	height:40px;
+	background-color:#234567;
+}
+.header .logo{
+	line-height:40px;
+	font-weigle:bold;
+	font-size:18px;
+	margin-left:50px;
+}
+.header .logo a{
+	color: #FFF;
+}
+.header .login-stat{
+	line-height:40px;
+	font-size:14px;
+	float:right;
+	margin-right:50px;
+}
+.header .login-stat a{
+	color:#CCC;
+}
+
+.navigation{
+	margin-top: 10px;
+	height:38px;
+	border-bottom: 1px solid #E0E0E0;
+}
+.navigation ul{
+	padding: 0;	
+	margin:0 50px;
+}
+.navigation ul li{
+	list-style-type:none;
+	float: left;
+	margin: 0 50px 0 0;
+}
+.navigation ul li a{
+	display: block;
+	line-height: 35px;
+	padding: 0 10px;
+	color: #000;
+	font-weight: bold;
+}
+.navigation ul li a:hover{
+	border-bottom: 3px solid red;
+}
+.navigation .active{
+	border-bottom: 3px solid red;
+}
+
+
+/* body styles ------------------------------------------ */
+.body{
+	min-height: 500px;
+	margin: 10px 50px;
+}
+
+
+
+/* footer styles ------------------------------------------ */
+.footer{
+	height:600px;
+	background-color:#E0E0E0;
+	padding: 10px 50px;
+}
+.footer .copy{
+  line-height:80px;
+  font-color=#CECECE;
+  font-size:12px;
+  color: #555;
+  padding-right: 50px;
+}
+.footer .link-item{
+  line-height: 80px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  padding: 0 10px;
+}

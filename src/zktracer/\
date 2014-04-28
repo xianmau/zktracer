@@ -1,0 +1,47 @@
+
+<script src="/static/js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('.navigation ul li a').eq(4).addClass("active");
+
+		$('.tablesorter').tablesorter({headers:{6:{sorter:false}}});
+
+		// 处理状态数据
+		$('.status-data').each(function(index) {
+			var data = $(this).text();
+			if(data == "true") {
+				$(this).html('<span class="text-success">running</span>')
+			}else {
+				$(this).html('<span class="text-danger">stop</span>')
+			}
+		});
+
+		// 处理段数据
+		$('.segments-data').each(function(){
+			var data = $(this).text();
+			var o = jQuery.parseJSON(data);
+			var data = '<div class="detail">';
+			for(var i = 0; i < o.length; i ++){
+				var tmp = "<p>Last Confirm Entry: " + o[i].last_confirm_entry + "</p>";
+				tmp += "<p>Loggers: </p>";
+				tmp += "<ul>";
+				for(var j = 0; j < o[i].loggers.length; j ++){
+					tmp += "<li>" + o[i].loggers[j] + "</li>";
+				}
+				tmp += "</ul>";
+				data += tmp;
+			}
+			data += '</div>';
+			data += '<span class="lable lable-info" data-toggle="tooltip" title="' + data + '">Show Details</span>';
+			$(this).html(data);
+		});
+	});
+
+
+	$(function(){
+		var n= $('#cur_tab').val();
+		$('#byTab a').eq(n).tab('show');
+	})
+
+
+</script>

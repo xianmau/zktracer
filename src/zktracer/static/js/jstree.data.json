@@ -1,0 +1,32 @@
+[
+	{
+		"text":"ymb",
+		"state":{ "opened": true, "selected": true },
+		"children":[
+				{
+					"text":"brokers",
+					"children":true
+				},
+				{
+					"text":"loggers",
+					"children":true
+				},
+				{
+					"text":"appid",
+					"children":true
+				},
+				{
+					"text":"topics",
+					"children":true
+				},
+				{
+					"text":"zoneid",
+					"children":false
+				},
+				{
+					"text":"remote_zones",
+					"children":false
+				}
+			]
+	}
+]

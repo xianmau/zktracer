@@ -1,0 +1,62 @@
+<div class="padding"></div>
+<div class="row">
+	<div class="col-xs-3">
+		<input class="form-control" type="text" />
+	</div>
+	<div class="col-xs-2">
+		<button type="botton" class="btn btn-default">Search</button>
+	</div>
+	<div class="col-xs-2"></div>
+	<div class="col-xs-2">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"> View all
+		    </label>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox"> Auto Refresh
+		    </label>
+		</div>
+	</div>
+	<div class="col-xs-3">
+		<select class="form-control" onchange="var url = this.options[this.selectedIndex].value; window.location.href=url;">
+		<option value="/app?zoneid={{.currentzone}}">Current: {{.currentzone}}</option>
+		{{range $key, $val := .zonelist}}
+			<option value="/app?zoneid={{$val}}">{{$val}}</option>
+		{{end}}
+		</select>
+	</div>
+</div>
+<div class="padding"></div>
+<div class="row">
+	<div class="col-xs-12">
+		Current zone: 
+		<span class="text-primary"><strong>{{.currentzone}}</strong></span>
+		Last sync: 
+		<span class="text-primary"><strong>{{.lastsync}}</strong></span>
+	</div>
+</div>
+
+<table class="tablesorter">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>App Id</th>
+			<th>Key</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	{{range $key, $val := .applist}}
+		<tr>
+			<td class="op-data">
+				<a href="/topic?zoneid={{$.currentzone}}&appid={{$val.Id}}"><span class="glyphicon glyphicon-user"></span></a>
+			</td>
+			<td class="id-data">{{$val.Id}}</td>
+			<td class="addr-data">{{$val.Key}}</td>
+			<td class="status-data">{{$val.Status}}</td>
+		</tr>
+	{{end}}
+	</tbody>
+</table>
