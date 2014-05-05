@@ -6,16 +6,34 @@
 		.on('init.jstree', function(){
 		})
 		.on('select_node.jstree', function(e, data){
-			//console.log('selected');
-			//console.log(data.instance.get_path(data.selected[0], '/', false));
-			var current_node = data.instance.get_path(data.selected[0], '/', false);
-			$('.node_path').html(current_node);
-			var code = '';
-			code += '<h2>';
-			code += current_node;
-			code += '</h2>';
-			$('.show').html(code);
+			var current_node = "/" + data.instance.get_path(data.selected[0], '/', false);
+			$('.node_path').html(current_node);	
+			$.ajax({
+				url: '/admin/getnodedata',
+				data: { 'zoneid':$('#cur_zone').val(), 'znode':current_node },
+				success: function(data){
+						var code = "";
+						var  o = data;
+						if(o == null){
+							o = [];
+						}
+						code += '<h3>ZNODE: ';
+						code += current_node;
 
+						code += '</h3>';
+						code += '<h3>INFO: </h3>';
+						code += '<h3 style="white-space:pre;">';
+						code +=	JSON.stringify(o, null, 4);
+						code += '</h3>';
+						code += '';
+						code += '';
+
+						$('.show').html(code);
+
+						console.log(o);
+					},
+				dataType: 'json'
+			});
 		})
 		.jstree({
 			'core':{
@@ -39,4 +57,44 @@
 			'plugins':["wholerow","sort"]
 		});
 	});
+	
+	function CreateNode(){
+		var cur_zone = $('#cur_zone').val();
+		var cur_znode = $('.node_path').text();
+		var new_node =  $('#new_node').val();
+		var node_data = $('#node_data').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/admin/createnode',
+			data: {
+				zoneid:cur_zone,
+				znode:new_node,
+				nodepath:cur_znode,
+				data:node_data
+			},
+			success: function(data){
+				//alert(data);
+				
+			},
+			dataType: 'json'
+		});
+	}
+
+	function DeleteNode(){
+		var cur_zone= $('#cur_zone').val();
+		var cur_znode = $('.node_path').text();
+		$.ajax({
+			type: 'POST',
+			url: '/admin/deletenode',
+			data: {
+				zoneid:cur_zone,
+				node:cur_znode
+			},
+			success: function(data){
+
+			},
+			dataType: 'json'
+		});
+	}
 </script>

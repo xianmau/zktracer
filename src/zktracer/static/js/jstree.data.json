@@ -21,11 +21,11 @@
 				},
 				{
 					"text":"zoneid",
-					"children":false
+					"children":true
 				},
 				{
 					"text":"remote_zones",
-					"children":false
+					"children":true
 				}
 			]
 	}

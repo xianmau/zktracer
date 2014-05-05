@@ -26,6 +26,11 @@ func init() {
 
 	beego.Router("/admin", &controllers.AdminController{})
 	beego.Router("/admin/node", &controllers.AdminController{})
-	beego.Router("/admin/zone", &controllers.AdminController{})
+	beego.Router("/admin/zone", &controllers.AdminController{}, "get:Zone")
+	beego.Router("/admin/zone/create", &controllers.AdminController{}, "post:CreateZone")
+	beego.Router("/admin/zone/delete", &controllers.AdminController{}, "post:DeleteZone")
 	beego.Router("/admin/getdata", &controllers.AdminController{}, "get:GetData")
+	beego.Router("/admin/getnodedata", &controllers.AdminController{}, "get:GetNodeData")
+	beego.Router("/admin/createnode", &controllers.AdminController{}, "post:CreateNode")
+	beego.Router("/admin/deletenode", &controllers.AdminController{}, "post:DeleteNode")
 }

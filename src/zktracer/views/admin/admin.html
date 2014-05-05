@@ -3,9 +3,9 @@
 
 	<div class="col-xs-3">
 		<select class="form-control" onchange="var url = this.options[this.selectedIndex].value; window.location.href=url;">
-			<option value="/app?zoneid={{.currentzone}}">Current: {{.currentzone}}</option>
+			<option value="/admin?zoneid={{.currentzone}}">Current: {{.currentzone}}</option>
 			{{range $key, $val := .zonelist}}
-			<option value="/app?zoneid={{$val}}">{{$val}}</option>
+			<option value="/admin?zoneid={{$val}}">{{$val}}</option>
 			{{end}}
 		</select>
 		<div id="zktree_div" style="overflow:auto;height:600px;">
@@ -16,12 +16,34 @@
 			<li><a href="#">Home</a></li>
 			<li><a href="#">ZKTree</a></li>
 			<li class="active">
-				<span class="node_path">/ymb/brokers</span>
+				<span class="node_path">/ymb</span>
 			</li>
 		</ol>
-		<div class="show">
-			<h2>Please select one node you want to view or modify.</h2>
-			<h2>:)</h2>
+
+		<form class="form-inline" role="form">
+			<div class="form-group">
+				<h3>Create New: </h3>
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="new_node">New Node Name</label>
+				<input type="text" class="form-control" id="new_node" placeholder="Enter node name">
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="node_data">Node Data</label>
+				<input class="form-control" type="text" id="node_data" placeholder="Enter node data" />
+			</div>
+			<div class="form-group">
+				<button class="btn btn-primary" type="button" onclick="CreateNode()">Create</button>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-danger" type="button" onclick="DeleteNode()">Delete</button>
+			</div>
+		</form>
+
+		<p>Note: The new node you created will be a child of the current path/node.</p>
+		<div class="show alert alert-info">
+			<h3>Please select one node you want to view or modify.</h3>
+			<h3>:)</h3>
 		</div>
 	</div>
 
@@ -30,3 +52,4 @@
 <div class="padding"></div>
 
 <input type="hidden" id="cur_zone" value="{{.currentzone}}" />
+

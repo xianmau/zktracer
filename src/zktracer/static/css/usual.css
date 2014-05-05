@@ -17,3 +17,20 @@
 .op-data a{
 	margin: 0 20px 0 0;
 }
+
+/* admin zone */
+.all-zones{
+}
+.all-zones .item{
+	float: left;
+	width: 200px;
+	padding: 10px;
+	margin: 10px;
+	border:1px solid #CCC;
+	border-top: 5px solid #CCC;
+	
+}
+.all-zones .item:hover{
+	border:1px solid #234567;
+	border-top: 5px solid #234567;
+}

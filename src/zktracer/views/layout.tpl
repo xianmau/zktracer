@@ -17,10 +17,21 @@
   <body>
   	<div class="header">
       <span class="logo"><a href="/">ZooKeeper Tracer</a></span>
+	  {{if .IsLogin}}
+	  <span class="login-stat"><a>Welcome, {{.LoginName}}! </a><a href="#">Exit</a></span>
+	  {{else}}
       <span class="login-stat"><a href="/login">Log on</a></span>
+	  {{end}}
     </div>
 
     <div class="navigation">
+	  {{if .IsLogin}}
+	  <ul>
+		<li><a href="/admin">Home</a></li>
+		<li><a href="/admin/zone">Zone</a></li>
+		<li><a href="/admin/myinfo">My Info</a></li>
+	  </ul>
+	  {{else}}
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/broker/">Broker</a></li>
@@ -28,6 +39,7 @@
         <li><a href="/app/">App</a></li>
         <li><a href="/topic/">Topic</a></li>
       </ul>
+	  {{end}}
       <div class="clear"></div>
     </div>
 
