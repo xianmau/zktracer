@@ -4,13 +4,13 @@ import (
 	"datastructure"
 	"encoding/json"
 	"fmt"
+	"github.com/samuel/go-zookeeper/zk"
 	"log"
 	"math/rand"
 	"strconv"
 	"sync"
 	"sysutil"
 	"time"
-	"zk"
 )
 
 // zones：zoneid对应的所有主机ip
@@ -105,63 +105,51 @@ func work(zoneid string) {
 	// 创建随机数对象
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	// 创建连接实例
-	conn := zk.New()
-	err := conn.Connect(zones[zoneid])
-	if err != nil {
-		panic(err)
-	}
-
+	conn, _, _ := zk.Connect(zones[zoneid], 1*time.Second)
 	// 先清空原来的数据
-	log.Printf("%s: cleaning old data\n", zoneid)
-	err = conn.DeleteRecur("/ymb")
+	log.Printf("%s: cleaning old data", zoneid)
+	err := DeleteRecur(conn, "/ymb")
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("%s: old data cleaned\n", zoneid)
-
+	log.Printf("%s: old data cleaned", zoneid)
 	//加入【/ymb】节点
-	if flag, err := conn.Exists("/ymb"); err == nil && !flag {
-		err = conn.Create("/ymb", []byte(""))
-		if err != nil {
-			panic(err)
-		}
+	if flag, _, err := conn.Exists("/ymb"); err == nil && !flag {
+		conn.Create("/ymb", []byte(""), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb")
 	}
 	// 加入【/ymb/zoneid】节点
-	if flag, err := conn.Exists("/ymb/zoneid"); err == nil && !flag {
-		err = conn.Create("/ymb/zoneid", []byte(zoneid))
+	if flag, _, err := conn.Exists("/ymb/zoneid"); err == nil && !flag {
+		conn.Create("/ymb/zoneid", []byte(zoneid), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/zoneid")
 	}
 	// 加入【/ymb/remote_zones】节点
-	if flag, err := conn.Exists("/ymb/remote_zones"); err == nil && !flag {
+	if flag, _, err := conn.Exists("/ymb/remote_zones"); err == nil && !flag {
 		remote_zones_json, err := json.Marshal(remote_zones[zoneid])
 		if err != nil {
 			panic(err)
 		}
-		err = conn.Create("/ymb/remote_zones", remote_zones_json)
-		if err != nil {
-			panic(err)
-		}
+		conn.Create("/ymb/remote_zones", remote_zones_json, 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/remote_zones")
 	}
 	// 加入【/ymb/brokers】节点
-	if flag, err := conn.Exists("/ymb/brokers"); err == nil && !flag {
-		err = conn.Create("/ymb/brokers", []byte(""))
+	if flag, _, err := conn.Exists("/ymb/brokers"); err == nil && !flag {
+		conn.Create("/ymb/brokers", []byte(""), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/brokers")
 	}
 	// 加入【/ymb/loggers】节点
-	if flag, err := conn.Exists("/ymb/loggers"); err == nil && !flag {
-		err = conn.Create("/ymb/loggers", []byte(""))
+	if flag, _, err := conn.Exists("/ymb/loggers"); err == nil && !flag {
+		conn.Create("/ymb/loggers", []byte(""), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/loggers")
 	}
 	// 加入【/ymb/appid】节点
-	if flag, err := conn.Exists("/ymb/appid"); err == nil && !flag {
-		err = conn.Create("/ymb/appid", []byte(""))
+	if flag, _, err := conn.Exists("/ymb/appid"); err == nil && !flag {
+		conn.Create("/ymb/appid", []byte(""), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/appid")
 	}
 	// 加入【/ymb/topics】节点
-	if flag, err := conn.Exists("/ymb/topics"); err == nil && !flag {
-		err = conn.Create("/ymb/topics", []byte(""))
+	if flag, _, err := conn.Exists("/ymb/topics"); err == nil && !flag {
+		conn.Create("/ymb/topics", []byte(""), 0, zk.WorldACL(zk.PermAll))
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/topics")
 	}
 
@@ -176,11 +164,8 @@ func work(zoneid string) {
 		if err != nil {
 			panic(err)
 		}
-		if flag, err := conn.Exists("/ymb/appid/" + app.Id); err == nil && !flag {
-			err = conn.Create("/ymb/appid/"+app.Id, app_json)
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/appid/" + app.Id); err == nil && !flag {
+			conn.Create("/ymb/appid/"+app.Id, app_json, 0, zk.WorldACL(zk.PermAll))
 		}
 		app_set = append(app_set, app.Id)
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/appid/"+app.Id)
@@ -197,11 +182,8 @@ func work(zoneid string) {
 		if err != nil {
 			panic(err)
 		}
-		if flag, err := conn.Exists("/ymb/brokers/" + broker.Id); err == nil && !flag {
-			err = conn.Create("/ymb/brokers/"+broker.Id, broker_json)
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/brokers/" + broker.Id); err == nil && !flag {
+			conn.Create("/ymb/brokers/"+broker.Id, broker_json, 0, zk.WorldACL(zk.PermAll))
 		}
 		broker_set = append(broker_set, broker.Id)
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/brokers/"+broker.Id)
@@ -219,11 +201,8 @@ func work(zoneid string) {
 		if err != nil {
 			panic(err)
 		}
-		if flag, err := conn.Exists("/ymb/loggers/" + logger.Id); err == nil && !flag {
-			err = conn.Create("/ymb/loggers/"+logger.Id, logger_json)
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/loggers/" + logger.Id); err == nil && !flag {
+			conn.Create("/ymb/loggers/"+logger.Id, logger_json, 0, zk.WorldACL(zk.PermAll))
 		}
 		logger_set = append(logger_set, logger.Id)
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/loggers/"+logger.Id)
@@ -245,84 +224,81 @@ func work(zoneid string) {
 		if err != nil {
 			panic(err)
 		}
-		if flag, err := conn.Exists("/ymb/topics/" + topic.AppId); err == nil && !flag {
-			err = conn.Create("/ymb/topics/"+topic.AppId, []byte(""))
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/topics/" + topic.AppId); err == nil && !flag {
+			conn.Create("/ymb/topics/"+topic.AppId, []byte(""), 0, zk.WorldACL(zk.PermAll))
 		}
-		if flag, err := conn.Exists("/ymb/topics/" + topic.AppId + "/" + topic.Name); err == nil && !flag {
-			err = conn.Create("/ymb/topics/"+topic.AppId+"/"+topic.Name, topic_json)
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/topics/" + topic.AppId + "/" + topic.Name); err == nil && !flag {
+			conn.Create("/ymb/topics/"+topic.AppId+"/"+topic.Name, topic_json, 0, zk.WorldACL(zk.PermAll))
 		}
-		if flag, err := conn.Exists("/ymb/topics/" + topic.AppId + "/" + topic.Name + "/" + brokerid); err == nil && !flag {
-			err = conn.Create("/ymb/topics/"+topic.AppId+"/"+topic.Name+"/"+brokerid, []byte(""))
-			if err != nil {
-				panic(err)
-			}
+		if flag, _, err := conn.Exists("/ymb/topics/" + topic.AppId + "/" + topic.Name + "/" + brokerid); err == nil && !flag {
+			conn.Create("/ymb/topics/"+topic.AppId+"/"+topic.Name+"/"+brokerid, []byte(""), 0, zk.WorldACL(zk.PermAll))
 		}
 		log.Printf("%s: node [%s] created\n", zoneid, "/ymb/topics/"+topic.AppId+"/"+topic.Name+"/"+brokerid)
 	}
 
 	// 每10秒更新一下数据
-	updateTicker := time.NewTicker(10 * time.Second)
-	defer updateTicker.Stop()
-	for {
-		select {
-		case <-updateTicker.C:
-			// 生成broker数据
-			for _, bro := range broker_set {
-				// 生成path
-				path := "/ymb/brokers/" + bro
-				// 获取data
-				broker_json, err := conn.Get(path)
-				if err != nil {
-					panic(err)
-				}
-				var broker datastructure.BrokerInfo
-				err = json.Unmarshal(broker_json, &broker)
-				broker.Stat = sysutil.SysUtils{r.Float64(), r.Float64(), r.Float64()}
-				if err != nil {
-					panic(err)
-				}
-				broker_json_new, err := json.Marshal(broker)
-				if err != nil {
-					panic(err)
-				}
-				err = conn.Set("/ymb/brokers/"+broker.Id, broker_json_new)
-				if err != nil {
-					panic(err)
-				}
+	timer := time.Tick(10 * time.Second)
+	for _ = range timer {
+		// 生成broker数据
+		for _, bro := range broker_set {
+			// 生成path
+			path := "/ymb/brokers/" + bro
+			// 获取data
+			broker_json, _, err := conn.Get(path)
+			if err != nil {
+				panic(err)
 			}
-			log.Printf("%s: brokers updated\n", zoneid)
-			// 生成logger数据
-			for _, lo := range logger_set {
-				// 生成path
-				path := "/ymb/loggers/" + lo
-				// 获取data
-				logger_json, err := conn.Get(path)
-				if err != nil {
-					panic(err)
-				}
-				var logger datastructure.LoggerInfo
-				err = json.Unmarshal([]byte(logger_json), &logger)
-				logger.Stat = sysutil.SysUtils{r.Float64(), r.Float64(), r.Float64()}
-				if err != nil {
-					panic(err)
-				}
-				logger_json_new, err := json.Marshal(logger)
-				if err != nil {
-					panic(err)
-				}
-				err = conn.Set("/ymb/loggers/"+logger.Id, logger_json_new)
-				if err != nil {
-					panic(err)
-				}
+			var broker datastructure.BrokerInfo
+			err = json.Unmarshal([]byte(broker_json), &broker)
+			broker.Stat = sysutil.SysUtils{r.Float64(), r.Float64(), r.Float64()}
+			if err != nil {
+				panic(err)
 			}
-			log.Printf("%s: loggers updated\n", zoneid)
+			broker_json_new, err := json.Marshal(broker)
+			if err != nil {
+				panic(err)
+			}
+			conn.Set("/ymb/brokers/"+broker.Id, broker_json_new, -1)
 		}
+		log.Printf("%s: brokers updated\n", zoneid)
+		// 生成logger数据
+		for _, lo := range logger_set {
+			// 生成path
+			path := "/ymb/loggers/" + lo
+			// 获取data
+			logger_json, _, err := conn.Get(path)
+			if err != nil {
+				panic(err)
+			}
+			var logger datastructure.LoggerInfo
+			err = json.Unmarshal([]byte(logger_json), &logger)
+			logger.Stat = sysutil.SysUtils{r.Float64(), r.Float64(), r.Float64()}
+			if err != nil {
+				panic(err)
+			}
+			logger_json_new, err := json.Marshal(logger)
+			if err != nil {
+				panic(err)
+			}
+			conn.Set("/ymb/loggers/"+logger.Id, logger_json_new, -1)
+		}
+		log.Printf("%s: loggers updated\n", zoneid)
 	}
 	conn.Close()
+}
+
+// API：递归删除节点
+func DeleteRecur(zk *zk.Conn, path string) error {
+	if flag, _, err := zk.Exists(path); err == nil && !flag {
+		return err
+	}
+	children, _, err := zk.Children(path)
+	if err != nil {
+		return err
+	}
+	for _, znode := range children {
+		sub_znode := path + "/" + znode
+		DeleteRecur(zk, sub_znode)
+	}
+	return zk.Delete(path, -1)
 }

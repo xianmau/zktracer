@@ -7,4 +7,6 @@ type YMB struct {
 	Topics      []TopicInfo
 	ZoneId      string
 	RemoteZones []string
+
+	BrokersTopics []BrokerTopic
 }
